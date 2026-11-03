@@ -11,64 +11,46 @@
 This tree depends on
 [android_device_samsung_universal2100-common](https://github.com/exy2100/android_device_samsung_universal2100-common).
 
-## Building
+## Building (Miku-Picked UI)
 
-The trees in [github.com/exy2100](https://github.com/exy2100) include forks of
-some LineageOS projects. `lineage.dependencies` can only pull unmodified
-projects from github.com/LineageOS, so the device, common, kernel, vendor and
-forked repositories have to come from a local manifest.
+This is the Miku-Picked UI fork of the
+[Macktherealonereally](https://github.com/Macktherealonereally/android_device_samsung_o1s)
+tree (release `lineage-23.2-20261031`), which is based on the
+[exy2100](https://github.com/exy2100/android_device_samsung_o1s) tree.
+Miku-Picked UI builds LineageOS 23.2 device trees through its
+`vendor/lineage` compatibility layer, so the tree keeps its `lineage_o1s`
+product name.
 
-1. Initialize a LineageOS 23.2 source tree:
+1. Initialize Miku-Picked UI:
 
    ```sh
-   repo init -u https://github.com/LineageOS/android.git -b lineage-23.2 --git-lfs --no-clone-bundle
+   repo init -u https://github.com/Miku-Picked-UI/manifesto -b picked-16 --git-lfs
    ```
 
-2. Create `.repo/local_manifests/o1s.xml`:
+2. Add the o1s local manifest. It brings the device, common, kernel and
+   vendor trees, `hardware/samsung`, `device/samsung_slsi/sepolicy` and
+   `hardware/samsung_slsi-linaro/*`, all from github.com/Miku-Picked-UI:
 
-   ```xml
-   <?xml version="1.0" encoding="UTF-8"?>
-   <manifest>
-     <remote name="exy2100" fetch="https://github.com/exy2100" revision="lineage-23.2" />
-
-     <!-- LineageOS projects replaced by exy2100 forks -->
-     <remove-project name="LineageOS/android_device_lineage_sepolicy" />
-     <remove-project name="LineageOS/android_hardware_lineage_interfaces" />
-     <remove-project name="LineageOS/android_lineage-sdk" />
-     <remove-project name="LineageOS/android_packages_apps_Settings" />
-
-     <!-- Device, kernel and vendor -->
-     <project path="device/samsung/o1s" name="android_device_samsung_o1s" remote="exy2100" />
-     <project path="device/samsung/universal2100-common" name="android_device_samsung_universal2100-common" remote="exy2100" />
-     <project path="kernel/samsung/universal2100" name="android_kernel_samsung_universal2100" remote="exy2100" />
-     <project path="vendor/samsung/o1s" name="proprietary_vendor_samsung_o1s" remote="exy2100" />
-     <project path="vendor/samsung/universal2100-common" name="proprietary_vendor_samsung_universal2100-common" remote="exy2100" />
-
-     <!-- exy2100 forks -->
-     <project path="device/lineage/sepolicy" name="android_device_lineage_sepolicy" remote="exy2100" />
-     <project path="device/samsung_slsi/sepolicy" name="android_device_samsung_slsi_sepolicy" remote="exy2100" />
-     <project path="hardware/lineage/interfaces" name="android_hardware_lineage_interfaces" remote="exy2100" />
-     <project path="hardware/samsung" name="android_hardware_samsung" remote="exy2100" />
-     <project path="hardware/samsung_slsi-linaro/exynos" name="android_hardware_samsung_slsi-linaro_exynos" remote="exy2100" />
-     <project path="lineage-sdk" name="android_lineage-sdk" remote="exy2100" />
-     <project path="packages/apps/Settings" name="android_packages_apps_Settings" remote="exy2100" />
-   </manifest>
+   ```sh
+   mkdir -p .repo/local_manifests
+   cp .repo/manifests/local_manifests/o1s.xml .repo/local_manifests/
    ```
-
-   The remaining LineageOS dependencies (`hardware/samsung_slsi-linaro/{codec2,config,exynos5,graphics,interfaces,openmax,sgpu}`)
-   are added automatically by `breakfast` through `lineage.dependencies`.
 
 3. Sync and build:
 
    ```sh
    repo sync -c -j$(nproc)
    source build/envsetup.sh
-   breakfast o1s
+   lunch lineage_o1s-bp4a-userdebug
    m bacon
    ```
 
-   The flashable package (`lineage-23.2-*-o1s.zip`) and `recovery.img` are
-   placed in `out/target/product/o1s/`.
+   Add `MIKU_GAPPS=true` before `m` for a build with Google apps.
+
+Optional extras from the upstream builds (OpenEUICC for eSIM, the krazey
+IMS stack for VoLTE/VoWiFi, Aurora Store) are not part of the Miku-Picked
+UI manifests. The tree only uses them when they are synced, see
+[galaxy-s21-exynos-lineageos-fixes](https://github.com/Macktherealonereally/galaxy-s21-exynos-lineageos-fixes).
 
 ## Installing
 
