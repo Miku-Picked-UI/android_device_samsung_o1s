@@ -13,15 +13,12 @@ $(call inherit-product, device/samsung/o1s/device.mk)
 # Inherit from common lineage configuration
 $(call inherit-product, vendor/lineage/config/common_full_phone.mk)
 
-# Google apps (MindTheGapps), only when vendor/gapps is synced and not
-# opted out with WITHOUT_GAPPS=true. TARGET_IS_GROUPER selects the minimal
-# set (GmsCore, GSF, Play Store, sync adapters); it must be set before the
-# inherit because arm64-vendor.mk tests it at parse time.
-# Do not set WITH_GMS: it would drop the product reserved size.
-ifneq ($(WITHOUT_GAPPS),true)
-ifneq ($(wildcard vendor/gapps/arm64/arm64-vendor.mk),)
-TARGET_IS_GROUPER := true
-$(call inherit-product, vendor/gapps/arm64/arm64-vendor.mk)
+# Google apps: Miku-Picked UI adds MindTheGapps itself when building with
+# MIKU_GAPPS=true (vendor/miku/config/versioning.mk), so the tree must not
+# inherit vendor/gapps here; Miku always syncs vendor/gapps and this would
+# otherwise put Google apps into every build. Only the o1s allowlists for
+# Play-updated Google apps are added to GApps builds.
+ifeq ($(MIKU_GAPPS),true)
 # Privileged permissions that Play-updated GmsCore needs but MindTheGapps'
 # allowlist lacks (see configs/permissions/privapp-permissions-gms-extra.xml).
 PRODUCT_PACKAGES += privapp-permissions-gms-extra.xml
@@ -31,15 +28,6 @@ PRODUCT_PACKAGES += privapp-permissions-gms-extra.xml
 PRODUCT_PACKAGES += \
     privapp-permissions-google-pixel-extra.xml \
     privapp-permissions-google-pixel-extra-system-ext.xml
-# Circle to Search: MindTheGapps already declares the CONTEXTUAL_SEARCH
-# feature and points config_defaultContextualSearchPackageName at the
-# Google app, but the minimal set leaves the Google app out, so Launcher3
-# swallows long-press home / nav handle without falling back. Ship it.
-# Set WITHOUT_GOOGLE_APP=true to keep the minimal set.
-ifneq ($(WITHOUT_GOOGLE_APP),true)
-PRODUCT_PACKAGES += Velvet
-endif
-endif
 endif
 
 PRODUCT_NAME := lineage_o1s
