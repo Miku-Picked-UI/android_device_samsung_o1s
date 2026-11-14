@@ -101,6 +101,13 @@ exynos_tty.ko
 exyswd-rng.ko
 samsung_iommu.ko
 samsung-iommu-group.ko
+exynos_gpex.ko
+mali_kbase_r38p0.ko
+mali_kbase_r38p1.ko
+mali_kbase_r44p1.ko
+mali_kbase_r49p1.ko
+mali_kbase_r54p1.ko
+mali_kbase_r54p3.ko
 mali_kbase.ko
 tzdev.ko
 tuihw.ko
