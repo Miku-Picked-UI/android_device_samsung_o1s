@@ -9,6 +9,9 @@ $(call inherit-product, device/samsung/universal2100-common/common.mk)
 # Inherit from the proprietary version
 $(call inherit-product, vendor/samsung/o1s/o1s-vendor.mk)
 
+# Mali GPU driver switch: the camera's OpenCL client
+$(call inherit-product-if-exists, vendor/samsung/o1s/mali/mali-vendor.mk)
+
 # Overlays
 DEVICE_PACKAGE_OVERLAYS += $(LOCAL_PATH)/overlay
 
