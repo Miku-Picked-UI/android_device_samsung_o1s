@@ -48,7 +48,3 @@ PRODUCT_BUILD_PROP_OVERRIDES += \
 # Define PDA property for camera
 PRODUCT_SYSTEM_PROPERTIES += \
     ro.build.PDA=G991BXXSJHZA6
-
-# ColorCC Quick Settings style: its strings app (dev.colorcc), which the panel linked into
-# SystemUI loads at runtime. Only present when the private colorcc local manifest is synced.
-$(call inherit-product-if-exists, vendor/colorcc/product.mk)
